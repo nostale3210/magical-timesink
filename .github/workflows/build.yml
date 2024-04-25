@@ -26,11 +26,11 @@ jobs:
       - name: Create virtual btrfs filesystem
         shell: bash
         run: |
-          dmsetup create builder
-          mkfs.btrfs -f /dev/mapper/builder
-          mkdir build
-          mount -o rw /dev/maper/builder ./build
-          cp -r arkdep-build build/
+          truncate --size=10G builder.img
+          mkfs.btrfs builder.img
+          losetup /dev/loop99 builder.img
+          mkdir builder
+          mount /dev/loop99 ./builder
 
       - name: Build rootfs in container
         uses: addnab/docker-run-action@v3
@@ -38,6 +38,8 @@ jobs:
           image: archlinux:latest
           options: -v /:/host
           run: |
+            cd builder
+
             sed -i "s/Required DatabaseOptional/Never/g" /etc/pacman.conf
             sed -i '72i[arkane]\nServer = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
             sed -i '74i[arkane-cauldron]\nServer = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
