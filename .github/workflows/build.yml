@@ -1,0 +1,36 @@
+name: build-rootfs
+on:
+  pull_request:
+  schedule:
+    - cron: '0 8 * * *'
+  push:
+    branches:
+      - "main"
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    name: Build and push rootfs
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+      options: --privileged
+      volumes:
+        - "/:/host"
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Test container
+        shell: bash
+        run: |
+          uname -a
+          ls /
+          cat /etc/pacman.conf
