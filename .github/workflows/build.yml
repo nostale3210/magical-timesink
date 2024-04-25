@@ -45,7 +45,7 @@ jobs:
             sed -i "s/Required DatabaseOptional/Never/g" /etc/pacman.conf
             sed -i '72 i [arkane]' /etc/pacman.conf
             sed -i '73 i Server = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
-            sed -i '74 i [arkane-cauldron] \n' /etc/pacman.conf
+            sed -i '74 i [arkane-cauldron]' /etc/pacman.conf
             sed -i '75 i Server = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
 
             cat /etc/pacman.conf
