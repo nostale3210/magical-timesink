@@ -31,6 +31,7 @@ jobs:
       - name: Test container
         shell: bash
         run: |
+          sed -i "s@#[core-testing]\n#Include = /etc/pacman.d/mirrorlist@Hello!@g"
           echo $'\n[arkane]\nServer = https://repo.arkanelinux.org/$repo/os/$arch' >> /etc/pacman.conf
           echo $'\n[arkane-cauldron]\nServer = https://repo.arkanelinux.org/$repo/os/$arch' >> /etc/pacman.conf
           cat /etc/pacman.conf
