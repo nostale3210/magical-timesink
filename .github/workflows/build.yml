@@ -43,4 +43,6 @@ jobs:
           ls /__t
           echo $'\n'
           ls /__e
+          echo $'\n'
+          ls
           cat /etc/pacman.conf
