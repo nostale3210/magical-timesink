@@ -16,11 +16,6 @@ jobs:
       contents: read
       packages: write
       id-token: write
-    container:
-      image: archlinux:latest
-      options: --privileged
-      volumes:
-        - "/:/host"
     strategy:
       fail-fast: false
 
@@ -31,12 +26,6 @@ jobs:
       - name: Create virtual btrfs filesystem
         shell: bash
         run: |
-          pacman-key --init
-          pacman -Sy --noconfirm archlinux-keyring
-          pacman -Syu --noconfirm
-
-          pacman -Sy btrfs-progs
-
           truncate --size=10G builder.img
           mkfs.btrfs builder.img
           mkdir builder
@@ -45,16 +34,23 @@ jobs:
           cp -r arkdep-build.d builder/
 
       - name: Build rootfs in container
-        shell: bash
-        run: |
-          cd builder
+        uses: addnab/docker-run-action@v3
+        with:
+          image: archlinux:latest
+          options: -v ${{ github.workspace }}:/work
+          shell: bash
+          run: |
+            cd /work/builder
 
-          sed -i "s/Required DatabaseOptional/Never/g" /etc/pacman.conf
-          sed -i '72i[arkane]\nServer = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
-          sed -i '74i[arkane-cauldron]\nServer = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
+            sed -i "s/Required DatabaseOptional/Never/g" /etc/pacman.conf
+            sed -i '72i[arkane]\nServer = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
+            sed -i '74i[arkane-cauldron]\nServer = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
 
-          pacman -Syu --noconfirm base base-devel btrfs-progs arch-install-scripts device-mapper arkane-keyring arkdep
+            pacman-key --init
+            pacman -Sy --noconfirm archlinux-keyring
+            pacman -Syu --noconfirm
+            pacman -S --noconfirm base base-devel btrfs-progs arch-install-scripts device-mapper arkane-keyring arkdep
 
-          arkdep-build timesink
-          cp target/*.zst ./timesink.tar.zst
+            arkdep-build timesink
+            cp target/*.zst ./timesink.tar.zst
 
