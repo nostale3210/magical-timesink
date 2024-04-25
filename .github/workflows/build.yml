@@ -33,4 +33,6 @@ jobs:
         run: |
           uname -a
           ls /
+          ls /host
+          ls /github
           cat /etc/pacman.conf
