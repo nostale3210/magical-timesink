@@ -31,7 +31,12 @@ jobs:
       - name: Create virtual btrfs filesystem
         shell: bash
         run: |
+          pacman-key --init
+          pacman -Sy --noconfirm archlinux-keyring
+          pacman -Syu --noconfirm
+
           pacman -Sy btrfs-progs
+
           truncate --size=10G builder.img
           mkfs.btrfs builder.img
           mkdir builder
@@ -48,10 +53,7 @@ jobs:
           sed -i '72i[arkane]\nServer = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
           sed -i '74i[arkane-cauldron]\nServer = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
 
-          pacman-key --init
-          pacman -Sy --noconfirm archlinux-keyring
-          pacman -Syu --noconfirm
-          pacman -S --noconfirm base base-devel btrfs-progs arch-install-scripts device-mapper arkane-keyring arkdep
+          pacman -Syu --noconfirm base base-devel btrfs-progs arch-install-scripts device-mapper arkane-keyring arkdep
 
           arkdep-build timesink
           cp target/*.zst ./timesink.tar.zst
