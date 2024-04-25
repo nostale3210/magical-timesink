@@ -35,5 +35,6 @@ jobs:
           sed -i '74i[arkane-cauldron]\nServer = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
 
           pacman-key --refresh-keys
+          pacman -S --noconfirm arkane-keyring
           pacman -Syu --noconfirm
-          pacman -S --noconfirm base base-devel arkane-keyring arkdep
+          pacman -S --noconfirm base base-devel arkdep
