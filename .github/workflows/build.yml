@@ -31,6 +31,6 @@ jobs:
       - name: Test container
         shell: bash
         run: |
-          sed -i "71i\n[arkane]\nServer = https://repo.arkanelinux.org/$repo/os/$arch" /etc/pacman.conf
-          echo $'\n[arkane-cauldron]\nServer = https://repo.arkanelinux.org/$repo/os/$arch' >> /etc/pacman.conf
+          sed -i '72i[arkane]\nServer = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
+          sed -i '74i[arkane-cauldron]\nServer = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
           cat /etc/pacman.conf
