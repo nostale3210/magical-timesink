@@ -31,14 +31,11 @@ jobs:
       - name: Test container
         shell: bash
         run: |
+          sed -i "s/[options]/[options]\nSigLevel = Never"
           sed -i '72i[arkane]\nServer = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
           sed -i '74i[arkane-cauldron]\nServer = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
 
           pacman-key --init
           pacman -Sy --noconfirm archlinux-keyring
-          pacman-key --recv-keys 2BA91DC2563B83D1
-          pacman-key --finger 2BA91DC2563B83D1
-          pacman-key --lsign-key 2BA91DC2563B83D1
-
           pacman -Syu --noconfirm
           pacman -S --noconfirm base base-devel arkane-keyring arkdep
