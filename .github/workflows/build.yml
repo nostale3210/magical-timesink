@@ -58,6 +58,6 @@ jobs:
             pacman -Syu --noconfirm
             pacman -S --noconfirm base base-devel btrfs-progs arch-install-scripts device-mapper arkane-keyring arkdep
 
-            arkdep-build timesink
+            sudo arkdep-build timesink
             cp target/*.zst ./timesink.tar.zst
 
