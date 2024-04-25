@@ -28,7 +28,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Test container
+      - name: Build rootfs
         shell: bash
         run: |
           sed -i "s/Required DatabaseOptional/Never/g" /etc/pacman.conf
@@ -38,7 +38,14 @@ jobs:
           pacman-key --init
           pacman -Sy --noconfirm archlinux-keyring
           pacman -Syu --noconfirm
-          pacman -S --noconfirm base base-devel arch-install-scripts arkane-keyring arkdep
+          pacman -S --noconfirm base base-devel btrfs-progs arch-install-scripts device-mapper arkane-keyring arkdep
+
+          dmsetup create builder
+          mkfs.btrfs /dev/mapper/builder
+          mkdir build
+          mount -o rw /dev/maper/builder ./build
+          cp -r arkdep-build build/
+          cd build
 
           arkdep-build timesink
           cp target/*.zst ./timesink.tar.zst
