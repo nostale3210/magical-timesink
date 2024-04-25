@@ -28,9 +28,8 @@ jobs:
         run: |
           truncate --size=10G builder.img
           mkfs.btrfs builder.img
-          losetup /dev/loop99 builder.img
           mkdir builder
-          mount /dev/loop99 ./builder
+          mount ./builder.img ./builder
 
       - name: Build rootfs in container
         uses: addnab/docker-run-action@v3
