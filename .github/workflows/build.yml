@@ -29,7 +29,7 @@ jobs:
           truncate --size=10G builder.img
           mkfs.btrfs builder.img
           mkdir builder
-          mount ./builder.img ./builder
+          sudo mount -t btrfs -o defaults,noatime ./builder.img ./builder
 
       - name: Build rootfs in container
         uses: addnab/docker-run-action@v3
