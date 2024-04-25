@@ -39,7 +39,8 @@ jobs:
           image: archlinux:latest
           options: -v /:/host
           run: |
-            ls
+            ls /home
+            ls /host
             cd /home/runner/work/magical-timesink/builder
 
             sed -i "s/Required DatabaseOptional/Never/g" /etc/pacman.conf
