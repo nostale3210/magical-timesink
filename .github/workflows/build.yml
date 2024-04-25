@@ -31,9 +31,8 @@ jobs:
       - name: Test container
         shell: bash
         run: |
-          sed -i '72i[arkane]\nServer = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
-          sed -i '74i[arkane-cauldron]\nServer = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
+          sed -i '72i[arkane]\nServer = https://repo.arkanelinux.org/$repo/os/$arch\nSigLevel = Optional TrustAll' /etc/pacman.conf
+          sed -i '75i[arkane-cauldron]\nServer = https://repo.arkanelinux.org/$repo/os/$arch\nSigLevel = Optional TrustAll' /etc/pacman.conf
 
-          pacman -Sy --noconfirm arkane-keyring
           pacman -Syu --noconfirm
-          pacman -S --noconfirm base base-devel arkdep
+          pacman -S --noconfirm base base-devel arkane-keyring arkdep
