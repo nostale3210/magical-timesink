@@ -30,6 +30,7 @@ jobs:
           mkfs.btrfs builder.img
           mkdir builder
           sudo mount -t btrfs -o defaults,noatime ./builder.img ./builder
+          sudo chmod 777 builder
           cp -r arkdep-build.d builder/
 
       - name: Build rootfs in container
