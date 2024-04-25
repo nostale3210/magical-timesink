@@ -41,7 +41,7 @@ jobs:
           pacman -S --noconfirm base base-devel btrfs-progs arch-install-scripts device-mapper arkane-keyring arkdep
 
           dmsetup create builder
-          mkfs.btrfs /dev/mapper/builder
+          mkfs.btrfs -f /dev/mapper/builder
           mkdir build
           mount -o rw /dev/maper/builder ./build
           cp -r arkdep-build build/
