@@ -30,6 +30,7 @@ jobs:
           mkfs.btrfs builder.img
           mkdir builder
           sudo mount -t btrfs -o defaults,noatime ./builder.img ./builder
+          cp -r arkdep-build.d builder/
 
       - name: Build rootfs in container
         uses: addnab/docker-run-action@v3
@@ -37,7 +38,7 @@ jobs:
           image: archlinux:latest
           options: -v /:/host
           run: |
-            cd builder
+            cd /home/runner/work/magical-timesink/builder
 
             sed -i "s/Required DatabaseOptional/Never/g" /etc/pacman.conf
             sed -i '72i[arkane]\nServer = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
