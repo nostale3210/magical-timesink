@@ -38,7 +38,7 @@ jobs:
           pacman-key --init
           pacman -Sy --noconfirm archlinux-keyring
           pacman -Syu --noconfirm
-          pacman -S --noconfirm base base-devel arkane-keyring arkdep
+          pacman -S --noconfirm base base-devel pacstrap arkane-keyring arkdep
 
           arkdep-build timesink
           cp target/*.zst ./timesink.tar.zst
