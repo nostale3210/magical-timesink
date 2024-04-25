@@ -27,17 +27,22 @@ jobs:
         shell: bash
         run: |
           truncate --size=10G builder.img
+          truncate --size=10G tmp.img
           mkfs.btrfs builder.img
+          mkfs.btrfs tmp.img
           mkdir builder
+          mkdir tmp
           sudo mount -t btrfs -o defaults,noatime ./builder.img ./builder
+          sudo mount -t btrfs -o defaults,noatime ./tmp.img ./tmp
           sudo chmod 777 builder
+          sudo chmod 777 tmp
           cp -r arkdep-build.d builder/
 
       - name: Build rootfs in container
         uses: addnab/docker-run-action@v3
         with:
           image: archlinux:latest
-          options: -v ${{ github.workspace }}:/work
+          options: -v ${{ github.workspace }}:/work -v ${{ github.workspace }}/tmp:/var/tmp
           shell: bash
           run: |
             cd /work/builder
@@ -47,8 +52,6 @@ jobs:
             sed -i '73 i Server = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
             sed -i '74 i [arkane-cauldron]' /etc/pacman.conf
             sed -i '75 i Server = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
-
-            cat /etc/pacman.conf
 
             pacman-key --init
             pacman -Sy --noconfirm archlinux-keyring
