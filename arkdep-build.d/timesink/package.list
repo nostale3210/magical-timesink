@@ -2,7 +2,6 @@ apparmor
 arch-install-scripts
 archiso
 arkane-application-cleaner
-arkane-flatpak-init
 arkane-wallpapers
 arkdep
 baobab
@@ -24,11 +23,8 @@ fwupd
 gdm
 git
 gnome-backgrounds
-gnome-calendar
-gnome-console
 gnome-control-center
 gnome-disk-utility
-gnome-screenshot
 gnome-shell
 gnome-software
 gnome-system-monitor
