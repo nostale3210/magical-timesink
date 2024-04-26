@@ -58,6 +58,12 @@ jobs:
             pacman -Syu --noconfirm
             pacman -S --noconfirm base base-devel btrfs-progs arch-install-scripts device-mapper arkane-keyring arkdep
 
+            mkdir -p arkdep-build.d/timesink/overlay/post_bootstrap/usr/bin
+            curl -L https://raw.githubusercontent.com/arkanelinux/arkdep/main/arkdep -O arkdep-build.d/timesink/overlay/post_bootstrap/usr/bin/arkdep
+            curl -L https://raw.githubusercontent.com/arkanelinux/arkdep/main/arkdep-build -O arkdep-build.d/timesink/overlay/post_bootstrap/usr/bin/arkdep-build
+            sed -i "s/curl -sf /curl -sfL /g" arkdep-build.d/timesink/overlay/post_bootstrap/usr/bin/arkdep
+            chmod +x arkdep-build.d/timesink/overlay/post_bootstrap/usr/bin/arkdep
+            chmod +x arkdep-build.d/timesink/overlay/post_bootstrap/usr/bin/arkdep-build
             arkdep-build timesink
 
             target_file=timesink-$(date +%d-%m-%H:%M)
@@ -86,7 +92,6 @@ jobs:
             gh release upload timesink-main builder/database -R ${{ github.repository_owner }}/${{ github.event.repository.name }} --clobber
           else
             gh release create timesink-main builder/$(cat builder/file_name) -t timesink-main -R ${{ github.repository_owner }}/${{ github.event.repository.name }}
-            gh release create timesink-main builder/database -t timesink-main -R ${{ github.repository_owner }}/${{ github.event.repository.name }}
           fi
 
 
