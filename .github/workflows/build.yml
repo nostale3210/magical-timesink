@@ -61,6 +61,7 @@ jobs:
             arkdep-build timesink
             cp target/*.zst ./timesink.tar.zst
 
+            gpg --generate-key
             gpg --output timesink.tar.zst.sig --detach-sig timesink.tar.zst
             
             checksum=($(sha1sum ./target/*.tar.*))
