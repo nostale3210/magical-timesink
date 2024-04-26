@@ -80,13 +80,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          if gh release list -R ${{ github.repository_owner }}/${{ github.event.repository.name }} | grep "latest-image"; then
-            gh release view latest-image -R ${{ github.repository_owner }}/${{ github.event.repository.name }} --json assets -q .assets[].name | xargs --no-run-if-empty -L 1 gh release delete-asset latest-image -R ${{ github.repository_owner }}/${{ github.event.repository.name }}
-            gh release upload latest-image builder/$(cat builder/file_name) -R ${{ github.repository_owner }}/${{ github.event.repository.name }} --clobber
-            gh release upload latest-image builder/database -R ${{ github.repository_owner }}/${{ github.event.repository.name }} --clobber
+          if gh release list -R ${{ github.repository_owner }}/${{ github.event.repository.name }} | grep "timesink-main"; then
+            gh release view timesink-main -R ${{ github.repository_owner }}/${{ github.event.repository.name }} --json assets -q .assets[].name | xargs --no-run-if-empty -L 1 gh release delete-asset timesink-main -R ${{ github.repository_owner }}/${{ github.event.repository.name }}
+            gh release upload timesink-main builder/$(cat builder/file_name) -R ${{ github.repository_owner }}/${{ github.event.repository.name }} --clobber
+            gh release upload timesink-main builder/database -R ${{ github.repository_owner }}/${{ github.event.repository.name }} --clobber
           else
-            gh release create latest-image builder/$(cat builder/file_name) -t image -R ${{ github.repository_owner }}/${{ github.event.repository.name }}
-            gh release create latest-image builder/database -t image -R ${{ github.repository_owner }}/${{ github.event.repository.name }}
+            gh release create timesink-main builder/$(cat builder/file_name) -t timesink-main -R ${{ github.repository_owner }}/${{ github.event.repository.name }}
+            gh release create timesink-main builder/database -t timesink-main -R ${{ github.repository_owner }}/${{ github.event.repository.name }}
           fi
 
 
