@@ -58,12 +58,12 @@ jobs:
             pacman -Syu --noconfirm
             pacman -S --noconfirm base base-devel btrfs-progs arch-install-scripts device-mapper arkane-keyring arkdep
 
-            mkdir -p arkdep-build.d/timesink/overlay/post_bootstrap/usr/bin
-            curl -L https://raw.githubusercontent.com/arkanelinux/arkdep/main/arkdep -O arkdep-build.d/timesink/overlay/post_bootstrap/usr/bin/arkdep
-            curl -L https://raw.githubusercontent.com/arkanelinux/arkdep/main/arkdep-build -O arkdep-build.d/timesink/overlay/post_bootstrap/usr/bin/arkdep-build
-            sed -i "s/curl -sf /curl -sfL /g" arkdep-build.d/timesink/overlay/post_bootstrap/usr/bin/arkdep
-            chmod +x arkdep-build.d/timesink/overlay/post_bootstrap/usr/bin/arkdep
-            chmod +x arkdep-build.d/timesink/overlay/post_bootstrap/usr/bin/arkdep-build
+            mkdir -p arkdep-build.d/timesink/overlay/usr/bin
+            curl -L https://raw.githubusercontent.com/arkanelinux/arkdep/main/arkdep -O arkdep-build.d/timesink/overlay/usr/bin/arkdep
+            curl -L https://raw.githubusercontent.com/arkanelinux/arkdep/main/arkdep-build -O arkdep-build.d/timesink/overlay/usr/bin/arkdep-build
+            sed -i "s/curl -sf /curl -sfL /g" arkdep-build.d/timesink/overlay/usr/bin/arkdep
+            chmod +x arkdep-build.d/timesink/overlay/usr/bin/arkdep
+            chmod +x arkdep-build.d/timesink/overlay/usr/bin/arkdep-build
             arkdep-build timesink
 
             target_file=timesink-$(date +%d-%m-%H:%M)
