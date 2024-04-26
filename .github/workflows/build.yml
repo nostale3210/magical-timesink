@@ -58,6 +58,8 @@ jobs:
             pacman -Syu --noconfirm
             pacman -S --noconfirm base base-devel btrfs-progs arch-install-scripts device-mapper arkane-keyring arkdep
 
+            arkdep-build timesink
+
             target_file=timesink-$(date +%d-%m-%H:%M)
             cp target/*.zst ./
 
