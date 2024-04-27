@@ -18,6 +18,10 @@ jobs:
       id-token: write
     strategy:
       fail-fast: false
+      matrix:
+        image:
+          - main
+          - nvidia
 
     steps:
       - name: Checkout repo
@@ -58,9 +62,8 @@ jobs:
             pacman -Syu --noconfirm
             pacman -S --noconfirm base base-devel btrfs-progs arch-install-scripts device-mapper arkane-keyring arkdep
 
-            arkdep-build timesink
+            arkdep-build timesink-${{ matrix.image }}
 
-            target_file=timesink-$(date +%d-%m-%H:%M)
             cp target/*.zst ./
 
             checksum=($(sha1sum ./*.tar.*))
@@ -80,12 +83,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          if gh release list -R ${{ github.repository_owner }}/${{ github.event.repository.name }} | grep "timesink-main"; then
-            gh release view timesink-main -R ${{ github.repository_owner }}/${{ github.event.repository.name }} --json assets -q .assets[].name | xargs --no-run-if-empty -L 1 gh release delete-asset timesink-main -R ${{ github.repository_owner }}/${{ github.event.repository.name }}
-            gh release upload timesink-main builder/$(cat builder/file_name) -R ${{ github.repository_owner }}/${{ github.event.repository.name }} --clobber
-            gh release upload timesink-main builder/database -R ${{ github.repository_owner }}/${{ github.event.repository.name }} --clobber
+          if gh release list -R ${{ github.repository_owner }}/${{ github.event.repository.name }} | grep "timesink-${{ matrix.image }}"; then
+            gh release view timesink-${{ matrix.image }} -R ${{ github.repository_owner }}/${{ github.event.repository.name }} --json assets -q .assets[].name | xargs --no-run-if-empty -L 1 gh release delete-asset timesink-${{ matrix.image }} -R ${{ github.repository_owner }}/${{ github.event.repository.name }}
+            gh release upload timesink-${{ matrix.image }} builder/$(cat builder/file_name) -R ${{ github.repository_owner }}/${{ github.event.repository.name }} --clobber
+            gh release upload timesink-${{ matrix.image }} builder/database -R ${{ github.repository_owner }}/${{ github.event.repository.name }} --clobber
           else
-            gh release create timesink-main builder/$(cat builder/file_name) -t timesink-main -R ${{ github.repository_owner }}/${{ github.event.repository.name }}
+            gh release create timesink-${{ matrix.image }} builder/$(cat builder/file_name) -t timesink-${{ matrix.image }} -R ${{ github.repository_owner }}/${{ github.event.repository.name }}
           fi
 
 
