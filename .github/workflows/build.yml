@@ -59,7 +59,6 @@ jobs:
 
             pacman-key --init
             pacman -Sy --noconfirm archlinux-keyring
-            pacman -Syu --noconfirm
             pacman -S --noconfirm base base-devel btrfs-progs arch-install-scripts device-mapper arkane-keyring arkdep
 
             arkdep-build timesink-${{ matrix.image }}
