@@ -20,6 +20,7 @@ distrobox
 dosfstools
 efibootmgr
 f2fs-tools
+firefox
 flatpak
 fwupd
 gdm
@@ -77,6 +78,7 @@ system76-scheduler
 tailscale
 tectonic
 terminus-font
+tpm2-tools
 ttf-lilex-nerd
 ttf-nerd-fonts-symbols
 vulkan-intel
