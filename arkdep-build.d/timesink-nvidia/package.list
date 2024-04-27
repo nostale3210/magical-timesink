@@ -20,6 +20,7 @@ distrobox
 dosfstools
 efibootmgr
 f2fs-tools
+firefox
 flatpak
 fwupd
 gdm
