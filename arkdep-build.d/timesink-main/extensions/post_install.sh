@@ -24,3 +24,11 @@ chmod +x /var/tmp/rootfs/usr/bin/nix
 # install proot
 curl -L https://proot.gitlab.io/proot/bin/proot > /var/tmp/rootfs/usr/bin/proot
 chmod +x /var/tmp/rootfs/usr/bin/proot
+
+# enable services
+systemctl enable tailscaled.service
+systemctl enable ufw.service
+ufw enable
+
+ufw default deny incoming
+ufw default allow outgoing
