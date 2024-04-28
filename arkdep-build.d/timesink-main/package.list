@@ -94,6 +94,7 @@ xdg-desktop-portal-gnome
 xdg-user-dirs
 xdg-utils
 zellij
+zram-generator
 zsh
 zsh-autosuggestions
 zsh-completions
