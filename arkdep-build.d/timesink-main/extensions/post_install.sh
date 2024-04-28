@@ -24,11 +24,3 @@ chmod +x /var/tmp/rootfs/usr/bin/nix
 # install proot
 curl -L https://proot.gitlab.io/proot/bin/proot > /var/tmp/rootfs/usr/bin/proot
 chmod +x /var/tmp/rootfs/usr/bin/proot
-
-# setup zram
-cat > /etc/systemd/zram-generator.conf << EOF
-[zram0]
-zram-size = min(ram / 2, 4 * 1024)
-compression-algorithm = zstd
-fs-type = swap
-EOF
