@@ -35,53 +35,59 @@ jobs:
       - name: Create virtual btrfs filesystem
         shell: bash
         run: |
-          pacman -Sy --noconfirm btrfs-progs sudo
           truncate --size=10G tmp.img
           mkfs.btrfs tmp.img
           mkdir tmp
-          sudo mount -t btrfs -o defaults,noatime ./tmp.img /var/tmp
-          sudo chmod 777 tmp
+          mount -t btrfs -o defaults,noatime ./tmp.img /var/tmp
+          chmod 777 tmp
 
       - name: Build rootfs
-        shell: bash
-        run: |
-          sed -i "s/Required DatabaseOptional/Never/g" /etc/pacman.conf
-          sed -i '72 i [arkane]' /etc/pacman.conf
-          sed -i '73 i Server = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
-          sed -i '74 i [arkane-cauldron]' /etc/pacman.conf
-          sed -i '75 i Server = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
+        uses: Wandalen/wretry.action@v3.3.0
+        with:
+          attempt_limit: 2
+          attempt_delay: 15000
+          command: |
+            sed -i "s/Required DatabaseOptional/Never/g" /etc/pacman.conf
+            sed -i '72 i [arkane]' /etc/pacman.conf
+            sed -i '73 i Server = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
+            sed -i '74 i [arkane-cauldron]' /etc/pacman.conf
+            sed -i '75 i Server = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
 
-          pacman-key --init
-          pacman -Sy --noconfirm archlinux-keyring
-          pacman -S --noconfirm base base-devel arch-install-scripts device-mapper arkane-keyring arkdep
+            pacman-key --init
+            pacman -Sy --noconfirm archlinux-keyring
+            pacman -S --noconfirm base base-devel arch-install-scripts device-mapper arkane-keyring arkdep
 
-          arkdep-build timesink-${{ matrix.image }}
+            arkdep-build timesink-${{ matrix.image }}
 
-          cp target/*.zst ./
+            cp target/*.zst ./
 
-          checksum=($(sha1sum ./*.tar.*))
-          file=$(basename $(ls ./*.tar.*))
-          compress=${file##*.}
-          id=${file%%.*}
-          echo "$id:$compress:${checksum[0]}" > database
+            checksum=($(sha1sum ./*.tar.*))
+            file=$(basename $(ls ./*.tar.*))
+            compress=${file##*.}
+            id=${file%%.*}
+            echo "$id:$compress:${checksum[0]}" > database
 
-          echo "$file" > file_name
+            echo "$file" > file_name
 
 
       - name: Install github cli
         run: |
-          sudo pacman -S --noconfirm github-cli
+          pacman -S --noconfirm github-cli
 
       - name: Upload rootfs
+        uses: Wandalen/wretry.action@v3.3.0
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          if gh release list -R ${{ github.repository_owner }}/${{ github.event.repository.name }} | grep "timesink-${{ matrix.image }}"; then
+        with:
+          attempt_limit: 3
+          attempt_delay: 15000
+          command: |
+            if gh release list -R ${{ github.repository_owner }}/${{ github.event.repository.name }} | grep "timesink-${{ matrix.image }}"; then
             gh release view timesink-${{ matrix.image }} -R ${{ github.repository_owner }}/${{ github.event.repository.name }} --json assets -q .assets[].name | xargs --no-run-if-empty -L 1 gh release delete-asset timesink-${{ matrix.image }} -R ${{ github.repository_owner }}/${{ github.event.repository.name }}
             gh release upload timesink-${{ matrix.image }} $(cat file_name) -R ${{ github.repository_owner }}/${{ github.event.repository.name }} --clobber
             gh release upload timesink-${{ matrix.image }} database -R ${{ github.repository_owner }}/${{ github.event.repository.name }} --clobber
-          else
+            else
             gh release create timesink-${{ matrix.image }} $(cat file_name) -t timesink-${{ matrix.image }} -R ${{ github.repository_owner }}/${{ github.event.repository.name }}
-          fi
+            fi
 
 
