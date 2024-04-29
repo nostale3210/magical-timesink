@@ -1,11 +1,11 @@
-name: build-rootfs
+name: pull-test
 on:
   pull_request:
   workflow_dispatch:
 
 jobs:
   build-and-push:
-    name: Build and push rootfs
+    name: Test pull requests
     runs-on: ubuntu-latest
     permissions:
       contents: write
