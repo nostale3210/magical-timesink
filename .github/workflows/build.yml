@@ -16,6 +16,11 @@ jobs:
       contents: write
       packages: write
       id-token: write
+    container:
+      image: archlinux:latest
+      options: --privileged
+      volumes:
+        - "/:/host"
     strategy:
       fail-fast: false
       matrix:
@@ -30,53 +35,41 @@ jobs:
       - name: Create virtual btrfs filesystem
         shell: bash
         run: |
-          truncate --size=10G builder.img
           truncate --size=10G tmp.img
-          mkfs.btrfs builder.img
           mkfs.btrfs tmp.img
-          mkdir builder
           mkdir tmp
-          sudo mount -t btrfs -o defaults,noatime ./builder.img ./builder
-          sudo mount -t btrfs -o defaults,noatime ./tmp.img ./tmp
-          sudo chmod 777 builder
+          sudo mount -t btrfs -o defaults,noatime ./tmp.img /var/tmp
           sudo chmod 777 tmp
-          cp -r arkdep-build.d builder/
 
-      - name: Build rootfs in container
-        uses: addnab/docker-run-action@v3
-        with:
-          image: archlinux:latest
-          options: -v ${{ github.workspace }}:/work -v ${{ github.workspace }}/tmp:/var/tmp --privileged
-          shell: bash
-          run: |
-            cd /work/builder
+      - name: Build rootfs
+        shell: bash
+        run: |
+          sed -i "s/Required DatabaseOptional/Never/g" /etc/pacman.conf
+          sed -i '72 i [arkane]' /etc/pacman.conf
+          sed -i '73 i Server = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
+          sed -i '74 i [arkane-cauldron]' /etc/pacman.conf
+          sed -i '75 i Server = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
 
-            sed -i "s/Required DatabaseOptional/Never/g" /etc/pacman.conf
-            sed -i '72 i [arkane]' /etc/pacman.conf
-            sed -i '73 i Server = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
-            sed -i '74 i [arkane-cauldron]' /etc/pacman.conf
-            sed -i '75 i Server = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
+          pacman-key --init
+          pacman -Sy --noconfirm archlinux-keyring
+          pacman -S --noconfirm base base-devel btrfs-progs arch-install-scripts device-mapper arkane-keyring arkdep
 
-            pacman-key --init
-            pacman -Sy --noconfirm archlinux-keyring
-            pacman -S --noconfirm base base-devel btrfs-progs arch-install-scripts device-mapper arkane-keyring arkdep
+          arkdep-build timesink-${{ matrix.image }}
 
-            arkdep-build timesink-${{ matrix.image }}
+          cp target/*.zst ./
 
-            cp target/*.zst ./
+          checksum=($(sha1sum ./*.tar.*))
+          file=$(basename $(ls ./*.tar.*))
+          compress=${file##*.}
+          id=${file%%.*}
+          echo "$id:$compress:${checksum[0]}" > database
 
-            checksum=($(sha1sum ./*.tar.*))
-            file=$(basename $(ls ./*.tar.*))
-            compress=${file##*.}
-            id=${file%%.*}
-            echo "$id:$compress:${checksum[0]}" > database
-
-            echo "$file" > file_name
+          echo "$file" > file_name
 
 
       - name: Install github cli
         run: |
-          sudo apt install gh -y
+          sudo pacman -S --noconfirm github-cli
 
       - name: Upload rootfs
         env:
@@ -84,10 +77,10 @@ jobs:
         run: |
           if gh release list -R ${{ github.repository_owner }}/${{ github.event.repository.name }} | grep "timesink-${{ matrix.image }}"; then
             gh release view timesink-${{ matrix.image }} -R ${{ github.repository_owner }}/${{ github.event.repository.name }} --json assets -q .assets[].name | xargs --no-run-if-empty -L 1 gh release delete-asset timesink-${{ matrix.image }} -R ${{ github.repository_owner }}/${{ github.event.repository.name }}
-            gh release upload timesink-${{ matrix.image }} builder/$(cat builder/file_name) -R ${{ github.repository_owner }}/${{ github.event.repository.name }} --clobber
-            gh release upload timesink-${{ matrix.image }} builder/database -R ${{ github.repository_owner }}/${{ github.event.repository.name }} --clobber
+            gh release upload timesink-${{ matrix.image }} $(cat file_name) -R ${{ github.repository_owner }}/${{ github.event.repository.name }} --clobber
+            gh release upload timesink-${{ matrix.image }} database -R ${{ github.repository_owner }}/${{ github.event.repository.name }} --clobber
           else
-            gh release create timesink-${{ matrix.image }} builder/$(cat builder/file_name) -t timesink-${{ matrix.image }} -R ${{ github.repository_owner }}/${{ github.event.repository.name }}
+            gh release create timesink-${{ matrix.image }} $(cat file_name) -t timesink-${{ matrix.image }} -R ${{ github.repository_owner }}/${{ github.event.repository.name }}
           fi
 
 
