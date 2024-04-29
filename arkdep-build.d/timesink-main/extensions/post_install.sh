@@ -24,3 +24,6 @@ chmod +x /var/tmp/rootfs/usr/bin/nix
 # install proot
 curl -L https://proot.gitlab.io/proot/bin/proot > /var/tmp/rootfs/usr/bin/proot
 chmod +x /var/tmp/rootfs/usr/bin/proot
+
+# copy fiiles onto image
+cp -vra files/* /var/tmp/rootfs/

@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+set -oue pipefail
+
+arkdep deploy
+
+for file in /boot/loader/entries/*; do
+	if ! grep -q "discard" $file; then
+		sed -i "s/rw/rw rd.luks.options=discard/g" $file
+	fi
+done
+
+for dir in /boot/arkdep/*; do
+	sbctl sign $dir/vmlinuz
+done
+
+for dir in /boot/EFI/*; do
+	sbctl sign $dir/*
+done
