@@ -35,7 +35,7 @@ jobs:
       - name: Create virtual btrfs filesystem
         shell: bash
         run: |
-          sudo pacman -Sy --noconfirm btrfs-progs
+          pacman -Sy --noconfirm btrfs-progs sudo
           truncate --size=10G tmp.img
           mkfs.btrfs tmp.img
           mkdir tmp
