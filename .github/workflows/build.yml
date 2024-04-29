@@ -35,6 +35,7 @@ jobs:
       - name: Create virtual btrfs filesystem
         shell: bash
         run: |
+          sudo pacman -Sy --noconfirm btrfs-progs
           truncate --size=10G tmp.img
           mkfs.btrfs tmp.img
           mkdir tmp
@@ -52,7 +53,7 @@ jobs:
 
           pacman-key --init
           pacman -Sy --noconfirm archlinux-keyring
-          pacman -S --noconfirm base base-devel btrfs-progs arch-install-scripts device-mapper arkane-keyring arkdep
+          pacman -S --noconfirm base base-devel arch-install-scripts device-mapper arkane-keyring arkdep
 
           arkdep-build timesink-${{ matrix.image }}
 
