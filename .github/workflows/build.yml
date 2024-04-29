@@ -55,6 +55,9 @@ jobs:
           pacman -Sy --noconfirm archlinux-keyring
           pacman -S --noconfirm base base-devel arch-install-scripts device-mapper arkane-keyring arkdep
 
+          sed -i "1 i set -oue pipefail" /usr/bin/arkdep-build
+          cat /usr/bin/arkdep-build
+
           arkdep-build timesink-${{ matrix.image }}
 
           cp target/*.zst ./
