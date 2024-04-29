@@ -43,7 +43,7 @@ jobs:
           chmod 777 tmp
 
       - name: Build rootfs
-        uses: Wandalen/wretry.action@v3.3.0
+        uses: Wandalen/wretry.action@v3.4.0
         with:
           attempt_limit: 2
           attempt_delay: 15000
@@ -76,7 +76,7 @@ jobs:
           pacman -S --noconfirm github-cli
 
       - name: Upload rootfs
-        uses: Wandalen/wretry.action@v3.3.0
+        uses: Wandalen/wretry.action@v3.4.0
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
