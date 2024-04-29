@@ -1,10 +1,6 @@
 name: build-rootfs
 on:
-  schedule:
-    - cron: '0 8 * * *'
-  push:
-    branches:
-      - "main"
+  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -73,21 +69,3 @@ jobs:
       - name: Install github cli
         run: |
           pacman -S --noconfirm github-cli
-
-      - name: Upload rootfs
-        uses: Wandalen/wretry.action@v3.3.0
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          attempt_limit: 3
-          attempt_delay: 15000
-          command: |
-            if gh release list -R ${{ github.repository_owner }}/${{ github.event.repository.name }} | grep "timesink-${{ matrix.image }}"; then
-              gh release view timesink-${{ matrix.image }} -R ${{ github.repository_owner }}/${{ github.event.repository.name }} --json assets -q .assets[].name | xargs --no-run-if-empty -L 1 gh release delete-asset timesink-${{ matrix.image }} -R ${{ github.repository_owner }}/${{ github.event.repository.name }}
-              gh release upload timesink-${{ matrix.image }} $(cat file_name) -R ${{ github.repository_owner }}/${{ github.event.repository.name }} --clobber
-              gh release upload timesink-${{ matrix.image }} database -R ${{ github.repository_owner }}/${{ github.event.repository.name }} --clobber
-            else
-              gh release create timesink-${{ matrix.image }} $(cat file_name) -t timesink-${{ matrix.image }} -R ${{ github.repository_owner }}/${{ github.event.repository.name }}
-            fi
-
-
