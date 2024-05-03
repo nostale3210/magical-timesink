@@ -2,7 +2,7 @@ name: build-rootfs
 on:
   pull_request:
   schedule:
-    - cron: '0 8 * * *'
+    - cron: '0 10 * * *'
   push:
     branches:
       - "main"
