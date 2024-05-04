@@ -45,9 +45,9 @@ jobs:
       - name: Build rootfs
         uses: Wandalen/wretry.action@v3.4.0
         with:
-          attempt_limit: 2
-          attempt_delay: 15000
-          command: bash build-rootfs.sh
+          attempt_limit: 3
+          attempt_delay: 45000
+          command: bash build-rootfs.sh ${{ matrix.image }}
 
       - name: Install github cli
         run: |

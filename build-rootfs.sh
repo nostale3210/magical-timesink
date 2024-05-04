@@ -12,7 +12,7 @@ pacman-key --init
 pacman -Sy --noconfirm archlinux-keyring
 pacman -S --noconfirm base base-devel arch-install-scripts device-mapper arkane-keyring arkdep
 
-arkdep-build timesink-${{ matrix.image }}
+arkdep-build timesink-$1
 
 cp target/*.zst ./
 
