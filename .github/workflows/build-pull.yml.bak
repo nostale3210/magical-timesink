@@ -1,0 +1,71 @@
+name: pull-test
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    name: Test pull requests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      id-token: write
+    container:
+      image: archlinux:latest
+      options: --privileged
+      volumes:
+        - "/:/host"
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - main
+          - nvidia
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Create virtual btrfs filesystem
+        shell: bash
+        run: |
+          pacman -Sy --noconfirm btrfs-progs
+          truncate --size=10G tmp.img
+          mkfs.btrfs tmp.img
+          mkdir tmp
+          mount -t btrfs -o defaults,noatime ./tmp.img /var/tmp
+          chmod 777 tmp
+
+      - name: Build rootfs
+        uses: Wandalen/wretry.action@v3.3.0
+        with:
+          attempt_limit: 2
+          attempt_delay: 15000
+          command: |
+            sed -i "s/Required DatabaseOptional/Never/g" /etc/pacman.conf
+            sed -i '72 i [arkane]' /etc/pacman.conf
+            sed -i '73 i Server = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
+            sed -i '74 i [arkane-cauldron]' /etc/pacman.conf
+            sed -i '75 i Server = https://repo.arkanelinux.org/$repo/os/$arch' /etc/pacman.conf
+
+            pacman-key --init
+            pacman -Sy --noconfirm archlinux-keyring
+            pacman -S --noconfirm base base-devel arch-install-scripts device-mapper arkane-keyring arkdep
+
+            arkdep-build timesink-${{ matrix.image }}
+
+            cp target/*.zst ./
+
+            checksum=($(sha1sum ./*.tar.*))
+            file=$(basename $(ls ./*.tar.*))
+            compress=${file##*.}
+            id=${file%%.*}
+            echo "$id:$compress:${checksum[0]}" > database
+
+            echo "$file" > file_name
+
+
+      - name: Install github cli
+        run: |
+          pacman -S --noconfirm github-cli
