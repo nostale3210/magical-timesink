@@ -35,6 +35,11 @@ gnome-tweaks
 gst-plugin-pipewire
 gst-plugins-base
 gst-plugins-good
+gvfs-afc
+gvfs-goa
+gvfs-mtp
+gvfs-nfs
+gvfs-smb
 ibus-typing-booster
 intel-media-driver
 libnss-extrausers
@@ -93,6 +98,7 @@ webp-pixbuf-loader
 wezterm
 wget
 wireplumber
+wl-clipboard
 xdg-desktop-portal-gnome
 xdg-user-dirs
 xdg-utils
