@@ -85,6 +85,7 @@ spice-vdagent
 sudo
 switcheroo-control
 system76-scheduler
+systembus-notify
 tailscale
 tectonic
 terminus-font
