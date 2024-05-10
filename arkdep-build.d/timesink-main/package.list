@@ -35,6 +35,7 @@ gnome-tweaks
 gst-plugin-pipewire
 gst-plugins-base
 gst-plugins-good
+hplip
 ibus-typing-booster
 intel-media-driver
 libnss-extrausers
