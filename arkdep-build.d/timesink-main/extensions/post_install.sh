@@ -27,3 +27,8 @@ chmod +x /var/tmp/rootfs/usr/bin/proot
 
 # copy fiiles onto image
 cp -vra files/* /var/tmp/rootfs/
+
+# hide unneeded desktop entries
+sed -i "2 i NoDisplay=true" /var/tmp/rootfs/usr/share/applications/hplip.desktop
+sed -i "2 i NoDisplay=true" /var/tmp/rootfs/usr/share/applications/zellij.desktop
+sed -i "3 i NoDisplay=true" /var/tmp/rootfs/usr/share/applications/hp-uiscan.desktop
