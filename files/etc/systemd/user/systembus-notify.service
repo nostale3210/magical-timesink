@@ -1,0 +1,8 @@
+[Unit]
+Description=Show desktop notifications for earlyoom
+
+[Service]
+ExecStart=/usr/bin/systembus-notify
+
+[Install]
+WantedBy=default.target

@@ -1,1 +1,0 @@
-EARLYOOM_ARGS="-n -m 5 -s 3 --avoid '(^|/)(systemd|gnome-shell|firefox|nvim)$'"
