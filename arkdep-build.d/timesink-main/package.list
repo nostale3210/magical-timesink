@@ -35,6 +35,11 @@ gnome-tweaks
 gst-plugin-pipewire
 gst-plugins-base
 gst-plugins-good
+gvfs-afc
+gvfs-goa
+gvfs-mtp
+gvfs-nfs
+gvfs-smb
 hplip
 ibus-typing-booster
 intel-media-driver
@@ -82,6 +87,7 @@ terminus-font
 tpm2-tools
 ttf-lilex-nerd
 ttf-nerd-fonts-symbols
+ttf-nerd-fonts-symbols-mono
 ufw
 usb_modeswitch
 vulkan-intel
@@ -91,6 +97,7 @@ webp-pixbuf-loader
 wezterm
 wget
 wireplumber
+wl-clipboard
 xdg-desktop-portal-gnome
 xdg-user-dirs
 xdg-utils
