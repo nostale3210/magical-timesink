@@ -18,6 +18,7 @@ dbus-broker-units
 debugedit
 distrobox
 dosfstools
+earlyoom
 efibootmgr
 f2fs-tools
 firefox
