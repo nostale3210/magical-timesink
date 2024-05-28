@@ -14,7 +14,7 @@ pacman -S --noconfirm base base-devel arch-install-scripts device-mapper arkane-
 
 sed -i "s/31457280/3/g" /usr/bin/arkdep-build
 sed -i "s/20971520/3/g" /usr/bin/arkdep-build
-sed -i "s/15G/3G/g" /usr/bin/arkdep-build
+sed -i "s/15G/5G/g" /usr/bin/arkdep-build
 
 arkdep-build timesink-$1
 
