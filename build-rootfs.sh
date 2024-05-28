@@ -12,6 +12,9 @@ pacman-key --init
 pacman -Sy --noconfirm archlinux-keyring
 pacman -S --noconfirm base base-devel arch-install-scripts device-mapper arkane-keyring arkdep
 
+sed -i "s/31457280/3/g" /usr/bin/arkdep-build
+sed -i "s/20971520/3/g" /usr/bin/arkdep-build
+
 arkdep-build timesink-$1
 
 cp target/*.zst ./
